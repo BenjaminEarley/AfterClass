@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -14,6 +16,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.dexafree.materialList.cards.SmallImageCard;
+import com.dexafree.materialList.controller.OnDismissCallback;
+import com.dexafree.materialList.model.Card;
+import com.dexafree.materialList.view.MaterialListView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -23,8 +29,12 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HomeActivity extends ActionBarActivity implements
@@ -129,38 +139,34 @@ public class HomeActivity extends ActionBarActivity implements
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("JSON Request", response.toString());
-                int _size;
                 try {
                     // Parsing json object response
+                    JSONArray jsonEvents = response.getJSONArray("events");
+                    int length = jsonEvents.length();
+                    ArrayList<Event> eventsList = new ArrayList<>();
 
-                    JSONObject events = response.getJSONObject("events");
+                    final MaterialListView mListView = (MaterialListView) findViewById(R.id.events_listview);
 
-                    Log.d("Json Response", events.toString());
-                    /*int numberOfPhotos = JSONPhotos.getInt("total");
+                    for ( int i = 0; i < length; i++ ) {
+                        JSONObject jsonEvent = (JSONObject) jsonEvents.get(i);
+                        Event event = new Event();
+                        event.Id = jsonEvent.getInt("Id");
+                        event.Name = jsonEvent.getString("Name");
+                        event.Description = jsonEvent.getString("Description");
+                        event.EndDatetime = jsonEvent.getString("EndDatetime");
+                        event.StartDatetime = jsonEvent.getString("StartDatetime");
+                        event.Latitude = jsonEvent.getString("Latitude");
+                        event.Longitude = jsonEvent.getString("Longitude");
+                        event.LocationName = jsonEvent.getString("LocationName");
+                        eventsList.add(event);
 
-                    if (numberOfPhotos > 9)
-                        _size = 9;
-                    else
-                        _size = numberOfPhotos;
+                        SmallImageCard card = new SmallImageCard(getApplicationContext());
+                        card.setDescription(event.Description);
+                        card.setTitle(event.Name);
+                        card.setDrawable(R.drawable.ic_launcher);
 
-                    JSONArray JSONPhotoList = JSONPhotos.getJSONArray("photo");
-
-                    for (int i = 0; i < _size; i++) {
-                        Photo photo = new Photo();
-
-                        JSONObject JSONPhoto = (JSONObject) JSONPhotoList.get(i);
-                        photo.id = JSONPhoto.getString("id");
-                        photo.owner = JSONPhoto.getString("owner");
-                        photo.secret = JSONPhoto.getString("secret");
-                        photo.server = JSONPhoto.getString("server");
-                        photo.farm = JSONPhoto.getString("farm");
-                        photos.add(photo);
-
-
+                        mListView.add(card);
                     }
-                    //add photos to slide
-                    spinner.setVisibility(View.GONE);
-                    setFlickrSlideshowPhotos();*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -170,7 +176,6 @@ public class HomeActivity extends ActionBarActivity implements
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Volley Error", "Error: " + error.getMessage());
@@ -178,7 +183,6 @@ public class HomeActivity extends ActionBarActivity implements
                         error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
