@@ -126,10 +126,8 @@ public class HomeActivity extends ActionBarActivity {
 
                         card.setTitle(event.Name);
                         card.setDescription(event.Description);
-                        //card.setDrawable(R.drawable.ic_launcher);
-                        //card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap");
-                        int width = mListView.getWidth();
-                        card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?size=" + width + "x100&zoom=19&center=" + event.Latitude + "," + event.Longitude);
+                        card.setDrawable("http://api.tiles.mapbox.com/v4/zzbomb.lhb63odi/"+event.Longitude+","+event.Latitude+",19/1280x300.png?access_token=pk.eyJ1Ijoienpib21iIiwiYSI6ImFUXzl4V2MifQ.TtHzm29PQS99KQ0dXf7gGA");
+
                         card.setLeftButtonText("More Info");
 
                         card.setRightButtonTextColorRes(R.color.primary_dark);
