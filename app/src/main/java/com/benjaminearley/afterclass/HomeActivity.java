@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -40,6 +41,8 @@ public class HomeActivity extends ActionBarActivity {
 
     private long xp;
 
+    SharedPreferences prefs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +60,37 @@ public class HomeActivity extends ActionBarActivity {
         this.user_id = extras.getString("id");
         this.user_name = extras.getString("name");
 
+        prefs = this.getSharedPreferences(
+                "com.benjaminearley.afterclass", Context.MODE_PRIVATE);
+
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(this.user_name);
+
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (prefs.contains("xp")) {
+            long xp = prefs.getLong("xp", Long.parseLong(""));
+        } else {
+            xp = 0;
+        }
+
+        TextView mTextView = (TextView) findViewById(R.id.xp);
+        mTextView.setText(xp + "XP");
+        TextView mTextView2 = (TextView) findViewById(R.id.level);
+        mTextView2.setText(Integer.toString(setLevel(xp)));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        prefs.edit().putLong("xp", xp).apply();
     }
 
 
@@ -208,7 +240,7 @@ public class HomeActivity extends ActionBarActivity {
         return true;
     }
 
-    private int setLevel(int xp) {
+    private int setLevel(long xp) {
 
         int level = 1;
 
