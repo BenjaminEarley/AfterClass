@@ -26,5 +26,6 @@
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="title">After Class</string>
     <string name="logout">Logout</string>
+    <string name="preference_file_key">score</string>
 
 </resources>
