@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -45,9 +47,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends ActionBarActivity implements LocationListener{
+public class HomeActivity extends ActionBarActivity {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    Button btnGPSShowLocation;
+
+    AppLocationService appLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,8 +205,4 @@ public class HomeActivity extends ActionBarActivity implements LocationListener{
         return true;
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
 }

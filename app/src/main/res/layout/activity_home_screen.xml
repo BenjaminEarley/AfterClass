@@ -5,6 +5,15 @@
     android:noHistory="true"
     tools:context="com.benjaminearley.afterclass.HomeActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:elevation="5dp"
+        android:minHeight="?attr/actionBarSize"
+        style="@style/Widget.MyApp.ActionBar"/>
+
+
     <com.dexafree.materialList.view.MaterialListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
