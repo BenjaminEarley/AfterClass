@@ -23,7 +23,7 @@
     <string name="mock_server_has_token">Mock server has refresh token?</string>
     <string name="request_server_auth_code">Request server auth code?</string>
     <string name="configuration_error">Error: the value of WEB_CLIENT_ID or SERVER_BASE_URL is not  set correctly. This will cause errors when requesting a server auth code.</string>
-    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_home_screen">After Class</string>
     <string name="title">After Class</string>
     <string name="logout">Logout</string>
     <string name="preference_file_key">score</string>
