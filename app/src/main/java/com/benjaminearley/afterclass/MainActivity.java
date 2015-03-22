@@ -241,7 +241,7 @@ public class MainActivity extends FragmentActivity implements
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
 
-        Intent intent = new Intent(this, HomeScreen.class);
+        Intent intent = new Intent(this, HomeScreen.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);;
         MainActivity.this.startActivity(intent);
     }
 
