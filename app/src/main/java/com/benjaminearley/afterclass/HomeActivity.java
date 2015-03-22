@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -34,17 +37,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends ActionBarActivity implements LocationListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private String user_id;
     private String user_name;
+    double latitude = 0D;
+    double longitude = 0D;
 
     private long xp;
 
     SharedPreferences prefs;
 
     Typeface myTypeface;
+
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,9 @@ public class HomeActivity extends ActionBarActivity {
         name.setText(this.user_name);
         name.setTypeface(myTypeface);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
 
     }
 
@@ -79,14 +89,12 @@ public class HomeActivity extends ActionBarActivity {
         super.onResume();
 
         if (prefs.contains("xp")) {
-            prefs.getLong("xp", xp);
+            xp = prefs.getLong("xp", xp);
         } else {
             xp = 0;
         }
 
         myTypeface = Typeface.createFromAsset(getAssets(), "latoRegular.ttf");
-
-
 
         TextView mTextView = (TextView) findViewById(R.id.xp);
         mTextView.setText(xp + "XP");
@@ -94,6 +102,28 @@ public class HomeActivity extends ActionBarActivity {
         TextView mTextView2 = (TextView) findViewById(R.id.level);
         mTextView2.setText(Integer.toString(setLevel(xp)));
         mTextView2.setTypeface(myTypeface);
+
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        try {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+        catch (NullPointerException e) {
+
+        }
+
+        if (isLocationEnabled(this)) {
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
+            }
+            catch (IllegalArgumentException e) {
+
+            }
+
+        }
+        else {
+            locationSettingsOffAlertDialog();
+        }
     }
 
     @Override
@@ -119,9 +149,6 @@ public class HomeActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == R.id.logout) {
             Intent intent = new Intent();
             intent.setClass(this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -282,4 +309,26 @@ public class HomeActivity extends ActionBarActivity {
         return level;
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }

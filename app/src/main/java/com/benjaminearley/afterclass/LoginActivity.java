@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,6 +126,8 @@ public class LoginActivity extends FragmentActivity implements
     private SignInButton mSignInButton;
     private boolean doNotLogin = false;
 
+    ProgressBar spinner;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +217,9 @@ public class LoginActivity extends FragmentActivity implements
                 case R.id.sign_in_button:
                     mSignInProgress = STATE_SIGN_IN;
                     mGoogleApiClient.connect();
+                    spinner = (ProgressBar)findViewById(R.id.progressBar);
+                    spinner.setVisibility(View.VISIBLE);
+                    mSignInButton.setVisibility(View.GONE);
 
                     break;
             }

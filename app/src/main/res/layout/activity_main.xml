@@ -33,4 +33,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="137dp" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:visibility="invisible"
+        android:layout_alignBottom="@+id/sign_in_button"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
