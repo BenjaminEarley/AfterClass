@@ -218,8 +218,9 @@ public class LoginActivity extends FragmentActivity implements
                     mSignInProgress = STATE_SIGN_IN;
                     mGoogleApiClient.connect();
                     spinner = (ProgressBar)findViewById(R.id.progressBar);
-                    spinner.setVisibility(View.VISIBLE);
                     mSignInButton.setVisibility(View.GONE);
+                    spinner.setVisibility(View.VISIBLE);
+
 
                     break;
             }

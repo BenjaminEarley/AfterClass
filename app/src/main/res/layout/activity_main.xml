@@ -39,7 +39,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:visibility="invisible"
-        android:layout_alignBottom="@+id/sign_in_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignTop="@+id/loginTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="145dp" />
 
 </RelativeLayout>
