@@ -38,6 +38,8 @@ public class HomeActivity extends ActionBarActivity {
     private String user_id;
     private String user_name;
 
+    private long xp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +208,38 @@ public class HomeActivity extends ActionBarActivity {
             return false;
         }
         return true;
+    }
+
+    private int setLevel(int xp) {
+
+        int level = 1;
+
+        if (xp < 1000) {
+            level = 1;
+        }
+        else if (xp >= 1000){
+            level = 2;
+        }
+        else if (xp >= 3000){
+            level = 3;
+        }
+        else if (xp >= 5000){
+            level = 4;
+        }
+        else if (xp >= 10000){
+            level = 5;
+        }
+        else if (xp >= 20000){
+            level = 6;
+        }
+        else if (xp >= 50000){
+            level = 7;
+        }
+        else if (xp >= 100000){
+            level = 8;
+        }
+
+        return level;
     }
 
 }
