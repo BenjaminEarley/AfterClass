@@ -25,11 +25,8 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -55,7 +52,7 @@ import java.util.Set;
  * Demonstrates Google+ Sign-In and usage of the Google+ APIs to retrieve a
  * users profile information.
  */
-public class MainActivity extends FragmentActivity implements
+public class LoginActivity extends FragmentActivity implements
         ConnectionCallbacks, OnConnectionFailedListener,
         ResultCallback<LoadPeopleResult>, View.OnClickListener,
         CheckBox.OnCheckedChangeListener, GoogleApiClient.ServerAuthCodeCallbacks {
@@ -239,8 +236,8 @@ public class MainActivity extends FragmentActivity implements
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
 
-        Intent intent = new Intent(this, HomeScreen.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        MainActivity.this.startActivity(intent);
+        Intent intent = new Intent(this, HomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        LoginActivity.this.startActivity(intent);
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google
@@ -481,7 +478,7 @@ public class MainActivity extends FragmentActivity implements
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(MainActivity.this, responseBody, Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, responseBody, Toast.LENGTH_LONG).show();
                 }
             });
             return (statusCode == 200);
