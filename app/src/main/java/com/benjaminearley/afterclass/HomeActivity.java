@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class HomeScreen extends ActionBarActivity {
+public class HomeActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class HomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.logout) {
-            Intent intent = new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            HomeScreen.this.startActivity(intent);
+            Intent intent = new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            HomeActivity.this.startActivity(intent);
             return true;
         }
 

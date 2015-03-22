@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:screenOrientation="portrait"
     android:background="@drawable/background_splash">
 
     <com.google.android.gms.common.SignInButton
@@ -13,7 +12,8 @@
         android:layout_height="wrap_content"
         android:enabled="false"
         android:layout_gravity="center"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="77dp"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -22,11 +22,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/title"
         android:id="@+id/textView"
+        android:textColor="#FAFAFA"
+        android:textSize="70sp"
+        android:shadowColor="#212121"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="10"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="69dp"
-        android:textColor="#ffffff"
-        android:textSize="70dp" />
-
+        android:layout_marginTop="137dp" />
 
 </RelativeLayout>
