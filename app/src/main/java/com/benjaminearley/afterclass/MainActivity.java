@@ -153,6 +153,7 @@ public class MainActivity extends FragmentActivity implements
         }
 
         mGoogleApiClient = buildGoogleApiClient();
+
     }
 
     private GoogleApiClient buildGoogleApiClient() {
