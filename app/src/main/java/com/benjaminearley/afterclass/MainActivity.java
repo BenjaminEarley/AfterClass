@@ -129,10 +129,6 @@ public class MainActivity extends FragmentActivity implements
     private boolean mServerHasToken = true;
 
     private SignInButton mSignInButton;
-    private Button mSignOutButton;
-    private Button mRevokeButton;
-    private TextView mStatus;
-    private ListView mCirclesListView;
     private ArrayAdapter<String> mCirclesAdapter;
     private ArrayList<String> mCirclesList;
 
@@ -142,24 +138,14 @@ public class MainActivity extends FragmentActivity implements
         setContentView(R.layout.activity_main);
 
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
-        mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
-        mStatus = (TextView) findViewById(R.id.sign_in_status);
-        mCirclesListView = (ListView) findViewById(R.id.circles_list);
 
         // Button listeners
         mSignInButton.setOnClickListener(this);
-        mSignOutButton.setOnClickListener(this);
-        mRevokeButton.setOnClickListener(this);
-
-        // CheckBox listeners
-        ((CheckBox) findViewById(R.id.request_auth_code_checkbox)).setOnCheckedChangeListener(this);
-        ((CheckBox) findViewById(R.id.has_token_checkbox)).setOnCheckedChangeListener(this);
 
         mCirclesList = new ArrayList<String>();
         mCirclesAdapter = new ArrayAdapter<String>(
                 this, R.layout.circle_member, mCirclesList);
-        mCirclesListView.setAdapter(mCirclesAdapter);
+
 
         if (savedInstanceState != null) {
             mSignInProgress = savedInstanceState
@@ -215,32 +201,9 @@ public class MainActivity extends FragmentActivity implements
             // between connected and not connected.
             switch (v.getId()) {
                 case R.id.sign_in_button:
-                    mStatus.setText(R.string.status_signing_in);
                     mSignInProgress = STATE_SIGN_IN;
                     mGoogleApiClient.connect();
 
-                    break;
-                case R.id.sign_out_button:
-                    // We clear the default account on sign out so that Google Play
-                    // services will not return an onConnected callback without user
-                    // interaction.
-                    if (mGoogleApiClient.isConnected()) {
-                        Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                        mGoogleApiClient.disconnect();
-                    }
-                    onSignedOut();
-                    break;
-                case R.id.revoke_access_button:
-                    // After we revoke permissions for the user with a GoogleApiClient
-                    // instance, we must discard it and create a new one.
-                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                    // Our sample has caches no user data from Google+, however we
-                    // would normally register a callback on revokeAccessAndDisconnect
-                    // to delete user data so that we comply with Google developer
-                    // policies.
-                    Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient);
-                    mGoogleApiClient = buildGoogleApiClient();
-                    mGoogleApiClient.connect();
                     break;
             }
         }
@@ -249,18 +212,6 @@ public class MainActivity extends FragmentActivity implements
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.request_auth_code_checkbox:
-                mRequestServerAuthCode = isChecked;
-                buildGoogleApiClient();
-                if (isChecked) {
-                    findViewById(R.id.layout_has_token).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.layout_has_token).setVisibility(View.INVISIBLE);
-                }
-                break;
-            case R.id.has_token_checkbox:
-                mServerHasToken = isChecked;
-                break;
         }
     }
 
@@ -277,18 +228,11 @@ public class MainActivity extends FragmentActivity implements
 
         // Update the user interface to reflect that the user is signed in.
         mSignInButton.setEnabled(false);
-        mSignOutButton.setEnabled(true);
-        mRevokeButton.setEnabled(true);
 
-        // Hide the sign-in options, they no longer apply
-        findViewById(R.id.layout_server_auth).setVisibility(View.GONE);
 
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
-        mStatus.setText(String.format(
-                getResources().getString(R.string.signed_in_as),
-                currentUser.getDisplayName()));
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
@@ -421,13 +365,7 @@ public class MainActivity extends FragmentActivity implements
     private void onSignedOut() {
         // Update the UI to reflect that the user is signed out.
         mSignInButton.setEnabled(true);
-        mSignOutButton.setEnabled(false);
-        mRevokeButton.setEnabled(false);
 
-        // Show the sign-in options
-        findViewById(R.id.layout_server_auth).setVisibility(View.VISIBLE);
-
-        mStatus.setText(R.string.status_signed_out);
 
         mCirclesList.clear();
         mCirclesAdapter.notifyDataSetChanged();
@@ -452,7 +390,7 @@ public class MainActivity extends FragmentActivity implements
                         public void onCancel(DialogInterface dialog) {
                             Log.e(TAG, "Google Play services resolution cancelled");
                             mSignInProgress = STATE_DEFAULT;
-                            mStatus.setText(R.string.status_signed_out);
+
                         }
                     });
         } else {
@@ -465,7 +403,6 @@ public class MainActivity extends FragmentActivity implements
                                     Log.e(TAG, "Google Play services error could not be "
                                             + "resolved: " + mSignInError);
                                     mSignInProgress = STATE_DEFAULT;
-                                    mStatus.setText(R.string.status_signed_out);
                                 }
                             }).create();
         }
