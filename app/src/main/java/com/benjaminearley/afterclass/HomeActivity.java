@@ -1,9 +1,16 @@
 package com.benjaminearley.afterclass;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +28,7 @@ import com.dexafree.materialList.controller.OnDismissCallback;
 import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
@@ -28,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,21 +45,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+public class HomeActivity extends ActionBarActivity implements LocationListener{
 
-public class HomeActivity extends ActionBarActivity implements
-        LocationListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
-
-    private FusedLocationProviderApi fusedLocationProviderApi = LocationServices.FusedLocationApi;
-    LocationRequest mLocationRequest;
-    GoogleApiClient mGoogleApiClient;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getEvents();
         setContentView(R.layout.activity_home_screen);
+
+        checkPlayServices();
+
 
     }
 
@@ -83,51 +89,6 @@ public class HomeActivity extends ActionBarActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        startLocationUpdates();
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    protected void setLocation() {
-        createLocationRequest();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-    }
-
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
-
-    protected void startLocationUpdates() {
-        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
     }
 
     private void getEvents() {
@@ -176,6 +137,7 @@ public class HomeActivity extends ActionBarActivity implements
                 }
             }
         }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Volley Error", "Error: " + error.getMessage());
@@ -183,7 +145,63 @@ public class HomeActivity extends ActionBarActivity implements
                         error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        }else{
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+
+    }
+
+
+    public void locationSettingsOffAlertDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(HomeActivity.this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage("Please Turn On Location Services and Restart App");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i("Google Play Services", "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
     }
 }
