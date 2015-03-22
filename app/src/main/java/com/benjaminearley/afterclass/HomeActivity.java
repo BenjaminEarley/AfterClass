@@ -4,21 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,27 +20,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.dexafree.materialList.cards.SmallImageCard;
-import com.dexafree.materialList.controller.OnDismissCallback;
-import com.dexafree.materialList.model.Card;
+import com.dexafree.materialList.cards.BigImageButtonsCard;
 import com.dexafree.materialList.view.MaterialListView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends ActionBarActivity {
 
@@ -128,10 +111,19 @@ public class HomeActivity extends ActionBarActivity {
                         event.LocationName = jsonEvent.getString("LocationName");
                         eventsList.add(event);
 
-                        SmallImageCard card = new SmallImageCard(getApplicationContext());
-                        card.setDescription(event.Description);
+                        BigImageButtonsCard card = new BigImageButtonsCard (getApplicationContext());
+
                         card.setTitle(event.Name);
-                        card.setDrawable(R.drawable.ic_launcher);
+                        card.setDescription(event.Description);
+                        //card.setDrawable(R.drawable.ic_launcher);
+                        //card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap");
+                        int width = mListView.getWidth();
+                        card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?size=" + width + "x300&zoom=19&center=" + event.Latitude + "," + event.Longitude);
+                        card.setLeftButtonText("More Info");
+
+                        card.setRightButtonTextColorRes(R.color.primary_dark);
+                        card.setRightButtonText("Check In");
+
 
                         mListView.add(card);
                     }
