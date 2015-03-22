@@ -24,8 +24,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -52,7 +56,8 @@ import java.util.Set;
  * users profile information.
  */
 public class MainActivity extends FragmentActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener, View.OnClickListener,
+        ConnectionCallbacks, OnConnectionFailedListener,
+        ResultCallback<LoadPeopleResult>, View.OnClickListener,
         CheckBox.OnCheckedChangeListener, GoogleApiClient.ServerAuthCodeCallbacks {
 
     private static final String TAG = "android-plus-quickstart";
@@ -124,6 +129,8 @@ public class MainActivity extends FragmentActivity implements
     private boolean mServerHasToken = true;
 
     private SignInButton mSignInButton;
+    private ArrayAdapter<String> mCirclesAdapter;
+    private ArrayList<String> mCirclesList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,6 +141,8 @@ public class MainActivity extends FragmentActivity implements
 
         // Button listeners
         mSignInButton.setOnClickListener(this);
+
+        mCirclesList = new ArrayList<String>();
 
 
         if (savedInstanceState != null) {
@@ -223,10 +232,14 @@ public class MainActivity extends FragmentActivity implements
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
+
+        Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
+                .setResultCallback(this);
+
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
 
-        Intent intent = new Intent(this, HomeScreen.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);;
+        Intent intent = new Intent(this, HomeScreen.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         MainActivity.this.startActivity(intent);
     }
 
@@ -328,9 +341,29 @@ public class MainActivity extends FragmentActivity implements
         }
     }
 
+    @Override
+    public void onResult(LoadPeopleResult peopleData) {
+        if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
+            mCirclesList.clear();
+            PersonBuffer personBuffer = peopleData.getPersonBuffer();
+            try {
+                int count = personBuffer.getCount();
+                for (int i = 0; i < count; i++) {
+                    mCirclesList.add(personBuffer.get(i).getDisplayName());
+                }
+            } finally {
+                personBuffer.close();
+            }
+
+        } else {
+            Log.e(TAG, "Error requesting visible circles: " + peopleData.getStatus());
+        }
+    }
+
     private void onSignedOut() {
         // Update the UI to reflect that the user is signed out.
         mSignInButton.setEnabled(true);
+
     }
 
     @Override
