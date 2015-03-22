@@ -35,8 +35,10 @@ public class HomeActivity extends ActionBarActivity {
             return true;
         }
         if (id == R.id.logout) {
-            Intent intent = new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            HomeActivity.this.startActivity(intent);
+            Intent intent = new Intent();
+            intent.setClass(this, LoginActivity.class);
+            intent.putExtra("logout", "logout");
+            startActivity(intent);
             return true;
         }
 

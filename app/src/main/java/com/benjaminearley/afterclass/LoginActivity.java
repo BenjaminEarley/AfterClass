@@ -128,6 +128,7 @@ public class LoginActivity extends FragmentActivity implements
     private SignInButton mSignInButton;
     private ArrayAdapter<String> mCirclesAdapter;
     private ArrayList<String> mCirclesList;
+    private boolean doNotLogin = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,13 +142,18 @@ public class LoginActivity extends FragmentActivity implements
 
         mCirclesList = new ArrayList<String>();
 
+        mGoogleApiClient = buildGoogleApiClient();
 
-        if (savedInstanceState != null) {
-            mSignInProgress = savedInstanceState
-                    .getInt(SAVED_PROGRESS, STATE_DEFAULT);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String datas = extras.getString("logout");
+            if (datas != null) {
+                mGoogleApiClient.disconnect();
+                doNotLogin = true;
+            }
         }
 
-        mGoogleApiClient = buildGoogleApiClient();
+
 
     }
 
@@ -172,6 +178,8 @@ public class LoginActivity extends FragmentActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+
+        if(!doNotLogin)
         mGoogleApiClient.connect();
     }
 
