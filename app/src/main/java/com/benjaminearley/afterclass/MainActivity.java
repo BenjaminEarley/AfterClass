@@ -355,7 +355,6 @@ public class MainActivity extends FragmentActivity implements
                 personBuffer.close();
             }
 
-            mCirclesAdapter.notifyDataSetChanged();
         } else {
             Log.e(TAG, "Error requesting visible circles: " + peopleData.getStatus());
         }
