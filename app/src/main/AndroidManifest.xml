@@ -16,7 +16,8 @@
         android:name=".AppController">
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +31,8 @@
 
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home_screen" >
+            android:label="@string/title_activity_home_screen"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

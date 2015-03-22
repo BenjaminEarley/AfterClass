@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -145,6 +146,10 @@ public class LoginActivity extends FragmentActivity implements
         mCirclesList = new ArrayList<String>();
 
         mGoogleApiClient = buildGoogleApiClient();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+        }
 
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "latoLight.ttf");
         TextView myTextView = (TextView)findViewById(R.id.loginTitle);
