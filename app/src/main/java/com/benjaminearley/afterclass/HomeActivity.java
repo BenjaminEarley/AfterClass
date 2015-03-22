@@ -18,6 +18,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +30,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dexafree.materialList.cards.BigImageButtonsCard;
+import com.dexafree.materialList.cards.OnButtonPressListener;
+import com.dexafree.materialList.model.Card;
 import com.dexafree.materialList.view.MaterialListView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -44,6 +49,8 @@ public class HomeActivity extends ActionBarActivity implements LocationListener 
     private String user_name;
     double latitude = 0D;
     double longitude = 0D;
+    TextView mTextView;
+    TextView mTextView2;
 
     private long xp;
 
@@ -81,7 +88,6 @@ public class HomeActivity extends ActionBarActivity implements LocationListener 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-
     }
 
     @Override
@@ -96,10 +102,10 @@ public class HomeActivity extends ActionBarActivity implements LocationListener 
 
         myTypeface = Typeface.createFromAsset(getAssets(), "latoRegular.ttf");
 
-        TextView mTextView = (TextView) findViewById(R.id.xp);
+        mTextView = (TextView) findViewById(R.id.xp);
         mTextView.setText(xp + "XP");
         mTextView.setTypeface(myTypeface);
-        TextView mTextView2 = (TextView) findViewById(R.id.level);
+        mTextView2 = (TextView) findViewById(R.id.level);
         mTextView2.setText(Integer.toString(setLevel(xp)));
         mTextView2.setTypeface(myTypeface);
 
@@ -195,13 +201,26 @@ public class HomeActivity extends ActionBarActivity implements LocationListener 
 
                         card.setTitle(event.Name);
                         card.setDescription(event.Description);
-                        card.setDrawable("http://api.tiles.mapbox.com/v4/zzbomb.lhb63odi/"+event.Longitude+","+event.Latitude+",19/1280x300.png?access_token=pk.eyJ1Ijoienpib21iIiwiYSI6ImFUXzl4V2MifQ.TtHzm29PQS99KQ0dXf7gGA");
-
+                        card.setDrawable("http://api.tiles.mapbox.com/v4/zzbomb.lhb63odi/"+event.Longitude+","+event.Latitude+",19/1280x600.jpg?access_token=pk.eyJ1Ijoienpib21iIiwiYSI6ImFUXzl4V2MifQ.TtHzm29PQS99KQ0dXf7gGA");
                         card.setLeftButtonText("More Info");
 
                         card.setRightButtonTextColorRes(R.color.primary_dark);
                         card.setRightButtonText("Check In");
 
+
+                        card.setOnRightButtonPressedListener(new OnButtonPressListener() {
+
+                            @Override
+                            public void onButtonPressedListener(View view, Card card) {
+                                    xp = xp + 1000;
+                                mTextView = (TextView) findViewById(R.id.xp);
+                                mTextView.setText(xp + "XP");
+                                mTextView2 = (TextView) findViewById(R.id.level);
+                                mTextView2.setText(Integer.toString(setLevel(xp)));
+
+
+                            }
+                        });
 
                         mListView.add(card);
                     }
@@ -284,22 +303,22 @@ public class HomeActivity extends ActionBarActivity implements LocationListener 
         if (xp < 1000) {
             level = 1;
         }
-        else if (xp >= 1000){
+        else if (xp >= 1000 && xp < 3000){
             level = 2;
         }
-        else if (xp >= 3000){
+        else if (xp >= 3000 && xp < 5000){
             level = 3;
         }
-        else if (xp >= 5000){
+        else if (xp >= 5000 && xp < 10000){
             level = 4;
         }
-        else if (xp >= 10000){
+        else if (xp >= 10000 && xp < 20000){
             level = 5;
         }
-        else if (xp >= 20000){
+        else if (xp >= 20000 && xp < 50000){
             level = 6;
         }
-        else if (xp >= 50000){
+        else if (xp >= 50000 && xp < 100000){
             level = 7;
         }
         else if (xp >= 100000){
