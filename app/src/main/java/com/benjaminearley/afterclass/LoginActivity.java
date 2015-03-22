@@ -20,6 +20,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -144,6 +146,10 @@ public class LoginActivity extends FragmentActivity implements
 
         mGoogleApiClient = buildGoogleApiClient();
 
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "latoLight.ttf");
+        TextView myTextView = (TextView)findViewById(R.id.loginTitle);
+        myTextView.setTypeface(myTypeface);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String datas = extras.getString("logout");
@@ -179,8 +185,14 @@ public class LoginActivity extends FragmentActivity implements
     protected void onStart() {
         super.onStart();
 
-        if(!doNotLogin)
-        mGoogleApiClient.connect();
+        if(!doNotLogin) {
+            mGoogleApiClient.connect();
+        }
+        else {
+            mGoogleApiClient.disconnect();
+            mSignInProgress = 0;
+        }
+
     }
 
     @Override
@@ -244,8 +256,9 @@ public class LoginActivity extends FragmentActivity implements
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
 
-        Intent intent = new Intent(this, HomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         LoginActivity.this.startActivity(intent);
+        finish();
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google
