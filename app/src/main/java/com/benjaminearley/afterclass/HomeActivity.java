@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -43,6 +44,7 @@ public class HomeActivity extends ActionBarActivity {
 
     SharedPreferences prefs;
 
+    Typeface myTypeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +65,11 @@ public class HomeActivity extends ActionBarActivity {
         prefs = this.getSharedPreferences(
                 "com.benjaminearley.afterclass", Context.MODE_PRIVATE);
 
+        myTypeface = Typeface.createFromAsset(getAssets(), "latoRegular.ttf");
+
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(this.user_name);
-
+        name.setTypeface(myTypeface);
 
 
     }
@@ -75,15 +79,21 @@ public class HomeActivity extends ActionBarActivity {
         super.onResume();
 
         if (prefs.contains("xp")) {
-            long xp = prefs.getLong("xp", Long.parseLong(""));
+            prefs.getLong("xp", xp);
         } else {
             xp = 0;
         }
 
+        myTypeface = Typeface.createFromAsset(getAssets(), "latoRegular.ttf");
+
+
+
         TextView mTextView = (TextView) findViewById(R.id.xp);
         mTextView.setText(xp + "XP");
+        mTextView.setTypeface(myTypeface);
         TextView mTextView2 = (TextView) findViewById(R.id.level);
         mTextView2.setText(Integer.toString(setLevel(xp)));
+        mTextView2.setTypeface(myTypeface);
     }
 
     @Override
