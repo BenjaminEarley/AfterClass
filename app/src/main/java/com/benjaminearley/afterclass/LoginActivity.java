@@ -1,19 +1,5 @@
 package com.benjaminearley.afterclass;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.People.LoadPeopleResult;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
-import com.google.android.gms.plus.model.people.PersonBuffer;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -26,11 +12,20 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -56,8 +51,7 @@ import java.util.Set;
  * users profile information.
  */
 public class LoginActivity extends FragmentActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener,
-        ResultCallback<LoadPeopleResult>, View.OnClickListener,
+        ConnectionCallbacks, OnConnectionFailedListener, View.OnClickListener,
         CheckBox.OnCheckedChangeListener, GoogleApiClient.ServerAuthCodeCallbacks {
 
     private static final String TAG = "android-plus-quickstart";
@@ -129,8 +123,6 @@ public class LoginActivity extends FragmentActivity implements
     private boolean mServerHasToken = true;
 
     private SignInButton mSignInButton;
-    private ArrayAdapter<String> mCirclesAdapter;
-    private ArrayList<String> mCirclesList;
     private boolean doNotLogin = false;
 
     @Override
@@ -142,8 +134,6 @@ public class LoginActivity extends FragmentActivity implements
 
         // Button listeners
         mSignInButton.setOnClickListener(this);
-
-        mCirclesList = new ArrayList<String>();
 
         mGoogleApiClient = buildGoogleApiClient();
 
@@ -254,14 +244,12 @@ public class LoginActivity extends FragmentActivity implements
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
-
-        Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
-                .setResultCallback(this);
-
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
 
         Intent intent = new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("name", currentUser.getDisplayName());
+        intent.putExtra("id", currentUser.getId());
         LoginActivity.this.startActivity(intent);
         finish();
     }
@@ -361,25 +349,6 @@ public class LoginActivity extends FragmentActivity implements
                     mGoogleApiClient.connect();
                 }
                 break;
-        }
-    }
-
-    @Override
-    public void onResult(LoadPeopleResult peopleData) {
-        if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
-            mCirclesList.clear();
-            PersonBuffer personBuffer = peopleData.getPersonBuffer();
-            try {
-                int count = personBuffer.getCount();
-                for (int i = 0; i < count; i++) {
-                    mCirclesList.add(personBuffer.get(i).getDisplayName());
-                }
-            } finally {
-                personBuffer.close();
-            }
-
-        } else {
-            Log.e(TAG, "Error requesting visible circles: " + peopleData.getStatus());
         }
     }
 

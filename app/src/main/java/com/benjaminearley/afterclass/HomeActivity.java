@@ -34,6 +34,9 @@ import java.util.ArrayList;
 public class HomeActivity extends ActionBarActivity {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private String user_id;
+    private String user_name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,9 @@ public class HomeActivity extends ActionBarActivity {
 
         checkPlayServices();
 
-
+        Bundle extras = getIntent().getExtras();
+        this.user_id = extras.getString("id");
+        this.user_name = extras.getString("name");
     }
 
 
@@ -118,7 +123,7 @@ public class HomeActivity extends ActionBarActivity {
                         //card.setDrawable(R.drawable.ic_launcher);
                         //card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap");
                         int width = mListView.getWidth();
-                        card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?size=" + width + "x300&zoom=19&center=" + event.Latitude + "," + event.Longitude);
+                        card.setDrawable("https://maps.googleapis.com/maps/api/staticmap?size=" + width + "x100&zoom=19&center=" + event.Latitude + "," + event.Longitude);
                         card.setLeftButtonText("More Info");
 
                         card.setRightButtonTextColorRes(R.color.primary_dark);
