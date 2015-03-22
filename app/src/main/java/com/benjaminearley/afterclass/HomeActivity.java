@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -53,6 +54,9 @@ public class HomeActivity extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
         this.user_id = extras.getString("id");
         this.user_name = extras.getString("name");
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(this.user_name);
     }
 
 
