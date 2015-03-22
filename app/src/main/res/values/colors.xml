@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="primary">#0063dc</color>
-    <color name="primary_dark">#0058c3</color>
-    <color name ="accent">#ff0084</color>
-    <color name ="ripple">#ff0084</color>
+    <color name="primary">#4CAF50</color>
+    <color name="primary_dark">#43A047</color>
+    <color name ="accent">#C6FF00</color>
+    <color name ="ripple">#C6FF00</color>
     <color name ="actionbar_title_text">#FFFFFF</color>
     <color name ="black">#000000</color>
     <color name ="transparent_black">#000000</color>
